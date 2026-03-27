@@ -5,7 +5,7 @@ This dataset contains multimodal user behavior data (6DoF head poses and eye gaz
 ## Dataset Showcase & Download
 
 For dataset showcase, detailed previews, and download links, please visit our project page:
-[https://netai-lab.github.io/Gspark/](https://netai-lab.github.io/Gspark/)
+[https://netai-lab.github.io/GSpark/](https://netai-lab.github.io/GSpark/)
 
 ## Dataset Organization
 
