@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSpark: Multimodal User-Behavior Dataset for Gaussian Splatting</title>
+    <style>
+        :root {
+            --primary-blue: #1a2c3e;
+            --accent-red: #b22222;
+            --light-gray: #f8f9fa;
+            --border-color: #e0e4e8;
+            --highlight-bg: #fff4f2;
+        }
+        header { text-align: center; margin-bottom: 50px; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #1e2a3a;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px;
+            background: #ffffff;
+        }
+        h1 {
+            font-size: 2.2rem;
+            color: var(--primary-blue);
+            margin-bottom: 0.75rem;
+            line-height: 1.3;
+            font-weight: 700;
+        }
+        h2 {
+            color: var(--accent-red);
+            border-bottom: 2px solid #eee;
+            padding-bottom: 8px;
+            margin-top: 48px;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 1.5rem 0 0.8rem 0;
+            color: #2c3e50;
+        }
+        .authors {
+            font-size: 1.1rem;
+            color: #5a6874;
+            margin-bottom: 20px;
+        }
+        .abstract {
+            background: var(--light-gray);
+            padding: 28px;
+            border-radius: 16px;
+            border-left: 4px solid var(--accent-red);
+            text-align: justify;
+            font-size: 1rem;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        }
+        .stats-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+            margin: 30px 0;
+        }
+        .stat-card {
+            background: #f0f4f9;
+            border-radius: 24px;
+            padding: 20px 24px;
+            flex: 1;
+            min-width: 140px;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .stat-number {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: var(--accent-red);
+            line-height: 1;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        .main-fig {
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            margin: 20px 0;
+            background: #fafafa;
+        }
+        .caption {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #5a6e7c;
+            margin-top: -8px;
+            margin-bottom: 24px;
+            font-style: italic;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            font-size: 0.9rem;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 12px 10px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        th {
+            background-color: #eef2f7;
+            font-weight: 700;
+            color: #1e2f3d;
+        }
+        .check {
+            color: #1e7e34;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .highlight-row {
+            background-color: var(--highlight-bg);
+            font-weight: 600;
+            border-left: 3px solid var(--accent-red);
+        }
+        .insight-box {
+            background: #fef9f0;
+            border-left: 5px solid #d97706;
+            padding: 16px 22px;
+            margin: 20px 0;
+            border-radius: 12px;
+        }
+        .insight-title {
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: #b45309;
+        }
+        .btn-download {
+            background: var(--accent-red);
+            color: white;
+            padding: 14px 32px;
+            text-decoration: none;
+            border-radius: 40px;
+            font-weight: 600;
+            display: inline-block;
+            transition: 0.25s;
+            margin: 12px 0;
+            font-size: 1rem;
+            border: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .btn-download:hover {
+            background: #8b1a1a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+        }
+        pre {
+            background: #1e2a36;
+            color: #eef2f8;
+            padding: 20px;
+            border-radius: 16px;
+            overflow-x: auto;
+            font-size: 0.8rem;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            border: none;
+        }
+        footer {
+            text-align: center;
+            margin-top: 70px;
+            color: #7f8c8d;
+            font-size: 0.8rem;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 28px;
+        }
+        .img-supplement {
+            margin: 20px 0 30px;
+            text-align: center;
+            background: #fcfcfc;
+            border-radius: 16px;
+            padding: 12px;
+            border: 1px solid #edf2f7;
+        }
+        .img-supplement img {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .scroll-table {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        @media (max-width: 700px) {
+            body { padding: 24px 16px; }
+            h1 { font-size: 1.7rem; }
+            h2 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Guided by Your Behavior: A Multimodal User-Behavior Dataset for Photorealistic Static and Dynamic Gaussian Splat Viewing</h1>
+    <div class="authors">Anonymous Author(s) — Under Review for ACM Multimedia 2026</div>
+</header>
+
+<!-- Overview Figure -->
+<section>
+    <img src="assets/Fig1.png" alt="GSpark overview: downstream applications guided by multimodal user behavior" class="main-fig">
+    <p class="caption">Figure 1:  Illustration of downstream services and applications guided by multimodal cross-category user behavior analysis.
+</section>
+
+<!-- Abstract Section (Core focus on dataset) -->
+<section>
+    <h2>Abstract</h2>
+    <p class="abstract">
+        The emerging 3D/4D Gaussian Splatting (GS) has revolutionized photorealistic virtualization, yet large-scale user behavior datasets for GS remain scarce. We introduce <strong>GSpark</strong>, the first large-scale multimodal user-behavior dataset for immersive GS viewing, covering diverse 3DGS (static) and 4DGS (dynamic) content. Using a commercial HMD, we recorded <strong>6DoF motion</strong> and <strong>gaze signals</strong> from <strong>81 participants</strong> across <strong>12 high-fidelity scenes</strong> spanning four categories: garden-scale static, large-scale static, dynamic human avatars, and dynamic full scenes. We present a detailed acquisition system, dataset structure, and comprehensive cross-category analysis to reveal behavioral mechanisms. GSpark is publicly released to fuel research in volumetric streaming, compression, and XR optimization.
+    </p>
+</section>
+
+<!-- Key Stats Cards -->
+<div class="stats-grid">
+    <div class="stat-card"><div class="stat-number">81</div><div class="stat-label">Participants</div></div>
+    <div class="stat-card"><div class="stat-number">12</div><div class="stat-label">GS Scenes</div></div>
+    <div class="stat-card"><div class="stat-number">972</div><div class="stat-label">User Traces</div></div>
+    <div class="stat-card"><div class="stat-number">6DoF + Gaze</div><div class="stat-label">Multimodal Signals</div></div>
+    <div class="stat-card"><div class="stat-number">4</div><div class="stat-label">Content Categories</div></div>
+</div>
+
+
+<section>
+    <h2>Comparison with Existing Datasets</h2>
+    <p>GSpark is the first dataset covering all major GS categories (static garden/large-scale & dynamic human/full-scene) with <strong>both 6DoF and gaze signals</strong> from real HMD users. Below we compare against prior works.</p>
+    <div class="scroll-table">
+        <table>
+            <thead>
+                <tr><th rowspan="2">Dataset</th><th colspan="2">Static 3DGS</th><th colspan="2">Dynamic 4DGS</th><th colspan="2">User Behaviors</th><th rowspan="2">Non-Synthetic</th><th rowspan="2">Participants</th><th rowspan="2">Traces</th></tr>
+                <tr><th>Garden-scale</th><th>Large-scale</th><th>Human Avatars</th><th>Full-scene</th><th>6DoF</th><th>Gaze</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>L3GS </td><td class="check">✓</td><td>-</td><td>-</td><td>-</td><td class="check">✓</td><td>-</td><td>-</td><td>6</td><td>48</td></tr>
+                <tr><td>SRBF </td><td class="check">✓</td><td>-</td><td>-</td><td>-</td><td class="check">✓</td><td>-</td><td class="check">✓</td><td>3</td><td>24</td></tr>
+                <tr><td>LTS </td><td>-</td><td >-</td><td class="check">✓</td><td>-</td><td class="check">✓</td><td>-</td><td>-</td><td>4</td><td>8</td></tr>
+                <tr><td>EyeNavGS</td><td class="check">✓</td><td>-</td><td>-</td><td>-</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td>46</td><td>552</td></tr>
+                <tr><td>ViewGauss </td><td>-</td><td>-</td><td class="check">✓</td><td>-</td><td class="check">✓</td><td>-</td><td class="check">✓</td><td>35</td><td>140</td></tr>
+                <tr class="highlight-row"><td><strong>GSpark (Ours)</strong></td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td><strong>81</strong></td><td><strong>972</strong></td></tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- Original Table 1 Image -->
+
+</section>
+<!-- 1. Dataset Content & Stimuli (Table 2) -->
+<section>
+    <h2>GS Content Stimuli</h2>
+    <p>We curated 12 photorealistic Gaussian Splatting scenes covering four representative categories aligned with recent GS literature. Each scene ensures diverse geometric and dynamic complexity. Viewing durations guarantee sufficient exploration (≥120s for static scenes, loops for dynamic clips).</p>
+    
+    <div class="scroll-table">
+        <table>
+            <thead>
+                <tr><th>Category</th><th>Content Name</th><th>Label</th><th>Area / Scale</th><th>View Time</th></tr>
+            </thead>
+            <tbody>
+                <tr><td rowspan="3">Garden-scale 3DGS</td><td>Garden </td><td>Outdoor</td><td>400 m²</td><td>120 s</td></tr>
+                <tr><td>Truck </td><td>Outdoor</td><td>80 m²</td><td>120 s</td></tr>
+                <tr><td>DrJohnson </td><td>Indoor</td><td>60 m²</td><td>120 s</td></tr>
+                <tr><td rowspan="3">Large-scale 3DGS</td><td>Gallery </td><td>Indoor</td><td>2,500 m²</td><td>120 s</td></tr>
+                <tr><td>Campus </td><td>Outdoor</td><td>55,000 m²</td><td>120 s</td></tr>
+                <tr><td>CUHK<sub>Lower</sub> </td><td>Aerial</td><td>1.020 km²</td><td>120 s</td></tr>
+                <tr><td rowspan="3">Dynamic 4DGS Humans</td><td>DNA08_01 </td><td>Dancer</td><td>—</td><td>5 × 6 s</td></tr>
+                <tr><td>DNA13_09 </td><td>Photog</td><td>—</td><td>5 × 6 s</td></tr>
+                <tr><td>Sport_2 </td><td>Player</td><td>—</td><td>6 × 6 s</td></tr>
+                <tr><td rowspan="3">Dynamic Full-scene 4DGS</td><td>Dance_3 </td><td>Perform</td><td>10 m²</td><td>10 × 5 s</td></tr>
+                <tr><td>Actor1_4 </td><td>Interact</td><td>10 m²</td><td>6 × 6 s</td></tr>
+                <tr><td>Actor2_3 </td><td>Interact</td><td>10 m²</td><td>6 × 6 s</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- Original Table 2 Image (as supplementary) -->
+
+</section>
+
+<!-- 2. Equipment & Acquisition -->
+<section>
+    <h2> Acquisition System & Equipment</h2>
+    <p>Our data acquisition prototype uses an <strong>HTC VIVE Focus 3 Vision HMD</strong> with dual eye-tracking cameras (90 Hz). The system integrates with Unity via OpenXR, communicating with a Python-based proxy renderer that supports heterogeneous GS representations (3DGS & 4DGS) via UDP. User 6DoF head poses (position + orientation) and gaze vectors (world-space quaternion) are recorded at 25–45 Hz depending on scene complexity. All GS models are rendered at original 1:1 scale to preserve geometric fidelity.</p>
+    <ul>
+        <li><strong>Hardware</strong>: NVIDIA RTX 3090 GPU + Intel i9-10900K, wireless HMD with swivel chair for free rotation & handheld controller for translation.</li>
+        <li><strong>Software</strong>: Unity engine, custom UDP proxy, 4K4D [27] & 3DGS [11] renderers.</li>
+        <li><strong>Recorded signals</strong>: Timestamp (ms), position (X,Y,Z), head rotation (quaternion/euler), gaze origin + orientation, convergence distance.</li>
+    </ul>
+</section>
+
+<!-- 3. Participants & Procedure -->
+<section>
+    <h2> Participants & Procedure</h2>
+    <p>We recruited <strong>81 participants</strong> (age 19–56, 43 female, 38 male) with normal/corrected vision. Most had limited XR experience, yet reported high immersion (MOS > 4.2/5). Each participant viewed all 12 GS stimuli in randomized category order. The experiment comprised: (1) preparation & IPD calibration, (2) interactive viewing with free 6DoF exploration, (3) post-questionnaire (demographics, immersion, cybersickness). Behavioral data was automatically logged without interruption.</p>
+    <div class="scroll-table">
+        <table style="width: 70%; margin: 16px auto;">
+            <tr><th>Demographic</th><th>Statistics</th></tr>
+            <tr><td>Gender</td><td>43 F / 38 M</td></tr>
+            <tr><td>Age range</td><td>19 – 56 years</td></tr>
+            <tr><td>XR Experience (first-time)</td><td>62% (50 users)</td></tr>
+            <tr><td>Mean Immersion Score (MOS)</td><td>4.35 / 5.0</td></tr>
+            <tr><td>Total Valid Traces</td><td>972 (81 × 12 scenes)</td></tr>
+        </table>
+    </div>
+    <p>Each CSV trace includes: <code>Timestamp, Scene_X, Scene_Y, Scene_Z, Head_RotX, Head_RotY, Head_RotZ, Eye_RotX, Eye_RotY, Eye_RotZ, Eye_RotW</code>. Folder structure follows <code>Category_UserBehavior/ContentName_Label/UID_ContentName.csv</code> and detailed README.</p>
+</section>
+
+<!-- 4. Dataset Comparison (Table 1) -->
+
+
+
+
+<!-- 6. Dataset Structure & Format -->
+<section>
+    <h2>📁 Dataset Structure & Format</h2>
+    <p>The dataset follows a hierarchical folder structure for easy navigation:</p>
+    <pre style="background:#f0f2f5; color:#2c3e4e;">
+GSpark/
+├── Stimuli/               # sample rendered images of each scene
+├── Category_UserBehavior/
+│   ├── Garden_3DGS/
+│   │   ├── Garden_Outdoor/
+│   │   │   ├── UID001_Garden.csv
+│   │   │   └── ...
+│   ├── LargeScale_3DGS/
+│   ├── Dynamic_Human_4DGS/
+│   └── Dynamic_FullScene_4DGS/
+├── Readme.md              # acquisition parameters, coordinate system, equipment details
+└── LICENSE.txt
+    </pre>
+    <p>Each CSV includes columns: Timestamp (ms), Scene_X/Y/Z (meters), Head_RotX/Y/Z (degrees), Eye_RotX/Y/Z/W (quaternion). Sampling rates vary between 25–45 Hz depending on scene rendering load. The README file provides comprehensive documentation on coordinate conventions and usage.</p>
+</section>
+
+<!-- 7. Download & Access -->
+<section id="download">
+    <h2>Download & Access</h2>
+    <div style="background: #fef8f5; padding: 28px; border-radius: 24px; border: 1px solid #f0d6d0; text-align: center;">
+        <p style="font-size: 1.05rem;">GSpark is freely available for academic research. The dataset includes all raw CSV traces, scene metadata, and documentation. </p>
+        <a href="https://drive.google.com/drive/folders/1ENAcyoZEUXF_6rtKXUA0saOwnKV11pmO?usp=drive_link" target="_blank" class="btn-download" style="background: var(--accent-red); font-size: 1rem;">
+            ⬇️ Download from Google Drive (18.4 GB)
+        </a>
+        <p style="margin-top: 16px; font-size: 0.85rem; color: #5f6c7a;">Please read the <strong>Readme.md</strong> for folder structure and usage. If you encounter access issues, verify your Google account or contact the maintainers (anonymous for review).</p>
+        <p style="font-size: 0.85rem;">📜 License: CC BY-NC 4.0 – For non-commercial research only.</p>
+    </div>
+</section>
+
+<!-- 8. Citation & BibTeX -->
+<section id="citation">
+    <h2>Citation</h2>
+    <p>If you use GSpark in your research, please cite the following paper:</p>
+    <pre>
+@inproceedings{gspark2026multimodal,
+  title={Guided by Your Behavior: A Multimodal User-Behavior Dataset for Photorealistic Static and Dynamic Gaussian Splat Viewing},
+  author={Anonymous Author(s)},
+  booktitle={Proceedings of ACM Multimedia (MM'26)},
+  year={2026},
+  note={Under review}
+}</pre>
+    <p>Additionally, please consider acknowledging the dataset version and URL.</p>
+</section>
+
+<footer>
+    <p>© 2026 GSpark Project Team — First large-scale multimodal dataset for 3D/4D Gaussian Splatting interaction.<br>
+    Hosted via GitHub Pages. For questions or collaboration, please refer to the anonymous submission contact.</p>
+</footer>
+
+</body>
+</html>
