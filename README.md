@@ -2,6 +2,11 @@
 
 This dataset contains multimodal user behavior data (6DoF head poses and eye gaze) collected during immersive viewings of various 3D and 4D Gaussian Splatting (GS) models. It encompasses data from 81 participants exploring 12 high-fidelity scenes across four distinct categories.
 
+## Dataset Showcase & Download
+
+For dataset showcase, detailed previews, and download links, please visit our project page:
+[https://netai-lab.github.io/Gspark/](https://netai-lab.github.io/Gspark/)
+
 ## Dataset Organization
 
 The dataset directory is organized as follows:
