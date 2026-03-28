@@ -43,7 +43,7 @@ Each CSV file (`"UID"_"Content Name".csv`) contains the following columns:
 | `Timestamp` | Elapsed viewing time index, starting from the beginning of video playback/scene visualization. | Milliseconds (ms) |
 | `Scene_X`, `Scene_Y`, `Scene_Z` | Head position in the virtual environment (Unity's left-handed coordinate system). | Meters (m) |
 | `Head_RotX`, `Head_RotY`, `Head_RotZ` | Head orientation. | Degrees / Angular domain |
-| `Eye_RotX`, `Eye_RotY`, `Eye_RotZ`, `Eye_RotW` | Eye gaze orientation, capturing the user’s gaze direction within the scene. Also determines convergence distance and eye origin, mathematically combined with head pose. | World-space Quaternion |
+| `Eye_X`, `Eye_Y`, `Eye_Z`, `Eye_W` | Eye gaze orientation, capturing the user’s gaze direction within the scene. Also determines convergence distance and eye origin, mathematically combined with head pose. | World-space Quaternion |
 
 ### Coordinate System & Equipment
 - **System**: Unity Engine (Left-handed coordinate system).
